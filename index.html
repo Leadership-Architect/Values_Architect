@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Executive Values Architect | v1.4.2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #ffffff; color: #1a1a1a; }
+        .serif { font-family: 'Playfair Display', serif; }
+        .card { cursor: grab; background: #fff; border: 1px solid #e5e7eb; border-radius: 4px; padding: 10px; font-size: 0.85rem; transition: 0.2s; }
+        .column { min-height: 480px; background: #f9fafb; border: 1px solid #edf2f7; border-radius: 8px; padding: 15px; }
+        @media print { .no-print { display: none !important; } .print-only { display: block !important; } }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState } = React;
+
+        const VERSION = "1.4.2";
+        const COPYRIGHT = "Copyright © 2026 Wong Tsien Loong. All Rights Reserved.";
+
+        const VALUES_50 = [
+            { id: 1, n: "Acceptance", d: "To be accepted exactly as I am", c: "Human" },
+            { id: 2, n: "Accountability", d: "Taking full ownership of results and actions", c: "Driver" },
+            { id: 3, n: "Achievement", d: "Fulfilling significant and measurable goals", c: "Driver" },
+            { id: 4, n: "Evolution", d: "Embracing change, variety, and newness", c: "Vision" },
+            { id: 5, n: "Altruism", d: "Selfless concern for the well-being of others", c: "Human" },
+            { id: 6, n: "Ambition", d: "A strong drive for success, rank, and status", c: "Driver" },
+            { id: 7, n: "Authenticity", d: "Being true to one’s own soul and character", c: "Self" },
+            { id: 8, n: "Autonomy", d: "Independence, self-determination, and discretion", c: "Self" },
+            { id: 9, n: "Balance", d: "Maintaining harmony between competing demands", c: "Stability" },
+            { id: 10, n: "Belonging", d: "A sense of being part of a group or community", c: "Human" },
+            { id: 11, n: "Challenge", d: "Taking on difficult tasks that test my abilities", c: "Driver" },
+            { id: 12, n: "Compassion", d: "Feeling and acting on deep concern for others", c: "Human" },
+            { id: 13, n: "Competence", d: "Mastery, skill, and being capable in my work", c: "Driver" },
+            { id: 14, n: "Contribution", d: "Making a lasting, positive difference in the world", c: "Vision" },
+            { id: 15, n: "Courage", d: "Taking brave action in the face of fear or adversity", c: "Driver" },
+            { id: 16, n: "Creativity", d: "Expressing original ideas and imagination", c: "Vision" },
+            { id: 17, n: "Curiosity", d: "Seeking out, experiencing, and learning new things", c: "Vision" },
+            { id: 18, n: "Decisiveness", d: "Ability to make firm, conclusive, and timely choices", c: "Driver" },
+            { id: 19, n: "Diligence", d: "Being thorough and conscientious in all efforts", c: "Stability" },
+            { id: 20, n: "Diversity", d: "Appreciating and respecting individual differences", c: "Human" },
+            { id: 21, n: "Duty", d: "Carrying out my moral and professional obligations", c: "Stability" },
+            { id: 22, n: "Ecology", d: "Living in harmony with the natural environment", c: "Vision" },
+            { id: 23, n: "Excellence", d: "The relentless pursuit of optimal performance", c: "Driver" },
+            { id: 24, n: "Fairness", d: "Ensuring justice, decency, and equal treatment", c: "Human" },
+            { id: 25, n: "Principled Action", d: "Living consistently with high moral standards", c: "Self" },
+            { id: 26, n: "Faith", d: "Spirituality or belief in a higher purpose/power", c: "Self" },
+            { id: 27, n: "Family", d: "Prioritizing the health and happiness of the home", c: "Human" },
+            { id: 28, n: "Health", d: "Prioritizing physical and mental well-being", c: "Self" },
+            { id: 29, n: "Freedom", d: "Being free from undue restrictions and limitations", c: "Self" },
+            { id: 30, n: "Friendship", d: "Having close, supportive personal connections", c: "Human" },
+            { id: 31, n: "Generosity", d: "Giving of what I have to assist others", c: "Human" },
+            { id: 32, n: "Growth", d: "Commitment to continuous self-improvement", c: "Vision" },
+            { id: 33, n: "Harmony", d: "Seeking inner peace and avoiding conflict", c: "Stability" },
+            { id: 34, n: "Humility", d: "Being modest, unassuming, and operating without ego", c: "Self" },
+            { id: 35, n: "Humor", d: "Seeing the humorous side of myself and the world", c: "Human" },
+            { id: 36, n: "Influence", d: "Having control and impact over outcomes and others", c: "Driver" },
+            { id: 37, n: "Innovation", d: "Developing and implementing radically new solutions", c: "Vision" },
+            { id: 38, n: "Intelligence", d: "Keeping the mind sharp, active, and analytical", c: "Vision" },
+            { id: 39, n: "Justice", d: "Working to promote fair treatment for all", c: "Human" },
+            { id: 40, n: "Knowledge", d: "Seeking deep understanding and valuable insights", c: "Vision" },
+            { id: 41, n: "Leadership", d: "Inspiring and guiding others toward a vision", c: "Driver" },
+            { id: 42, n: "Legacy", d: "Focusing on the long-term impact I leave behind", c: "Vision" },
+            { id: 43, n: "Mindfulness", d: "Being present and living consciously in the moment", c: "Self" },
+            { id: 44, n: "Order", d: "Maintaining a life that is well-ordered and organized", c: "Stability" },
+            { id: 45, n: "Practicality", d: "Focusing on sensible and realistic solutions", c: "Stability" },
+            { id: 46, n: "Recognition", d: "Being known, validated, and acknowledged by others", c: "Driver" },
+            { id: 47, n: "Resilience", d: "Bouncing back quickly from adversity", c: "Driver" },
+            { id: 48, n: "Responsibility", d: "Taking ownership of my duties and decisions", c: "Driver" },
+            { id: 49, n: "Safety", d: "Prioritizing security and protection from harm", c: "Stability" },
+            { id: 50, n: "Wisdom", d: "Applying deep knowledge and experience effectively", c: "Vision" }
+        ];
+
+        function App() {
+            const [userName, setUserName] = useState("");
+            const [lifeStage, setLifeStage] = useState("");
+            const [state, setState] = useState({ deck: VALUES_50, core: [], important: [], noise: [] });
+            const [top5, setTop5] = useState([]);
+            const [view, setView] = useState('name');
+            const [timestamp, setTimestamp] = useState("");
+
+            const move = (item, from, to) => {
+                const ns = { ...state };
+                ns[from] = ns[from].filter(i => i.id !== item.id);
+                ns[to] = [...ns[to], item].sort((a,b) => a.n.localeCompare(b.n));
+                setState(ns);
+            };
+
+            const toggleTop5 = (item) => {
+                if (top5.includes(item)) setTop5(top5.filter(i => i !== item));
+                else if (top5.length < 5) setTop5([...top5, item]);
+            };
+
+            const generateReport = () => {
+                const final5 = state.core.length === 5 ? state.core : top5;
+                setTop5(final5);
+                setTimestamp(new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short' }));
+                setView('debrief');
+            };
+
+            // DEEP NARRATIVE ENGINE (8 Sentences per pillar)
+            const getExileAnalysis = () => {
+                const noise = state.noise;
+                if (!noise.length) return "Insufficient data in the Exile Zone.";
+                const counts = noise.reduce((acc, v) => { acc[v.c] = (acc[v.c] || 0) + 1; return acc; }, {});
+                const primary = Object.keys(counts).sort((a,b) => counts[b] - counts[a])[0];
+                const list = noise.slice(0, 5).map(v => v.n).join(", ");
+
+                const narratives = {
+                    Stability: `Your Exile Zone is dominated by the rejection of stability-centric values like ${list}. By consciously 'noising' these anchors, you have identified yourself as a leader who prioritizes agility and disruption over the safety of the status quo. This rejection suggests that you find little utility in tradition or predictability, likely viewing them as obstacles to genuine evolution. However, in systemic terms, this exile creates a specific type of organizational fatigue where your stakeholders may feel they are operating without a grounding wire. Your leadership shadow is one of high-velocity risk, where the absence of these guardrails can lead to catastrophic failure if the environment shifts too rapidly. A mature audit of this zone requires you to ask if your team is currently starving for the very order you have personally outgrown. Ultimately, your legacy will depend on whether you can re-integrate just enough of these exiles to prevent the system from burning out. By distancing yourself from these traits, you have gained speed, but you may have lost the capacity to provide true shelter during a prolonged crisis.`,
+                    Human: `By placing relational values like ${list} into the Noise pile, you have adopted the profile of a Clinical Commander. This choice indicates a strategic decision to optimize for output by exiling the inherent 'messiness' of human emotion and connection. You likely perceive these exiles as secondary to the mission, prioritizing the function of the role over the personhood of the individual. While this ensures a high-performance environment, it creates a system that is relationaly brittle and lacks the empathy required to survive deep failure. Stakeholders within your ecology may feel recognized for their metrics but ignored for their humanity, leading to a culture of high-level compliance but low-level loyalty. Your leadership shadow is one of isolation, where the distance you've created between yourself and the 'Human' cluster makes you difficult to reach or influence. In the long term, this exile risks a collapse of the collective spirit when the system can no longer achieve its goals through pure willpower. Reclaiming these discarded traits is not a sign of weakness, but a prerequisite for building a system that can actually breathe.`,
+                    Driver: `The exile of assertive values like ${list} reveals a leader who has actively suppressed the mechanics of personal power, ambition, and recognition. You have chosen to lead from the shadows, prioritizing the health of the system over your own visible influence or status. While this creates a safe and collaborative environment, it also creates a leadership shadow where your voice may be too quiet to provide direction during a chaotic period. By 'noising' your own drive, you risk a lack of decisiveness that can leave your system drifting when it most needs a visible hand at the helm. You have successfully binned the ego, but you may have also binned the catalytic heat required to break through institutional inertia. Systemically, your team may feel supported but uninspired, as the 'Driver' energy they need to win is currently sitting in your discard pile. Maturity in this stage of leadership involves reclaiming your personal power to ensure the mission doesn't stall for lack of a captain. Ultimately, an exile of ambition can become a cloaked form of avoidance, where you refuse to take the weight of the crown.`,
+                    Vision: `By exiling evolutionary values like ${list}, you have anchored yourself as a Grounded Tactician. Your leadership is defined by an absolute focus on the immediate, the practical, and the measurable, leaving little room for the 'lofty' or the unproven. This rejection of the future suggests a leader who has been burned by idealism or who simply finds no profit in speculation. While this ensures that you hit your quarterly objectives with surgical precision, it leaves you strategically blind to the disruptive horizon. Your leadership shadow is one of strategic myopia, where you are brilliant at winning the battle but potentially losing the war because you refused to look up. Systemically, your team likely feels secure in their current tasks but anxious about their future relevance in a changing industry. By 'noising' these visionary traits, you have protected the system from distraction, but you have also limited its capacity to dream. Re-integrating these exiles is the only way to ensure that your current success isn't just a beautifully managed sunset.`,
+                    Self: `Exiling values related to self-preservation like ${list} identifies you as an Institutional Ghost. You have effectively sacrificed your own health, autonomy, and boundaries on the altar of the mission. By 'noising' the needs of the self, you are modeling a path of inevitable burnout, suggesting to your system that the person is always secondary to the project. This leadership shadow is one of martyrdom, where you have mistaken self-neglect for dedication. Systemically, you are creating a culture where personhood is an obstacle, leading your best people to eventually follow your lead right over the cliff. By distancing yourself from your own well-being, you are making yourself a liability to the organization you are trying to save, as you lack the resilience to sustain a multi-year challenge. A mature leader realizes that their own health and authenticity are the ultimate load-bearing supports of the entire enterprise. If you continue to exile yourself, the system will eventually collapse simply because the architect has disintegrated.`
+                };
+
+                return narratives[primary] || "The Radical Editor: You have distributed your exiles across multiple categories, suggesting a leader currently in a state of high-stakes transition. You are actively shedding an old skin to make room for a yet-to-be-defined future.";
+            };
+
+            const getSystemicAnalysis = () => {
+                const mainVal = top5[2]?.n || "Core Value";
+                const s1 = `The Systemic Lens identifies your commitment to **${mainVal}** as the primary ecological driver of your leadership. `;
+                const s2 = `This value is not a private preference; it is the atmospheric pressure that everyone in your system must breathe. `;
+                const s3 = `It dictates the unwritten rules of your culture, determining what is celebrated, what is ignored, and what is punished. `;
+                const s4 = `While it provides your organization with a crystalline sense of identity, it functions as a 'systemic tax' on those who do not naturally align with this specific frequency. `;
+                const s5 = `Every stakeholder—from your board to your family—must adjust their own behavior to remain in alignment with your absolute focus on this principle. `;
+                const s6 = `If your team were to perform a silent audit of your influence, they would identify this value as the bottleneck through which all their efforts must pass. `;
+                const s7 = `The critical inquiry is whether your commitment to ${mainVal} is currently enabling the system's growth or slowly suffocating its necessary diversity. `;
+                const s8 = `A mature leader eventually recognizes that their greatest strength is often the very thing that prevents their system from evolving beyond them.`;
+                return s1 + s2 + s3 + s4 + s5 + s6 + s7 + s8;
+            };
+
+            const getParadoxAnalysis = () => {
+                const v1 = top5[0]?.n;
+                const v2 = top5[1]?.n;
+                const s1 = `The Paradox Lens illuminates the permanent structural tension between your pursuit of **${v1}** and **${v2}**. `;
+                const s2 = `These are not complementary values; they are a fundamental polarity that creates a constant internal and external friction in your leadership. `;
+                const s3 = `In a crisis, you will inevitably be forced to choose which of these 'goods' to betray to save the other, revealing your true hierarchy. `;
+                const s4 = `Mature leadership is the capacity to hold this 'both/and' tension without collapsing into the comfort of a single preference. `;
+                const s5 = `If you favor ${v1} too frequently, you become a rigid caricature of your own principles; if you favor ${v2}, you lose your strategic edge. `;
+                const s6 = `The maturity of your leadership is found in the quality of the compromise you make between these two competing truths every day. `;
+                const s7 = `You must ask yourself who in your system is currently caught in the crossfire of this unresolved and potentially invisible tension. `;
+                const s8 = `Your ongoing development lies in sustaining the discomfort of this paradox until a higher-order solution eventually emerges from the friction.`;
+                return s1 + s2 + s3 + s4 + s5 + s6 + s7 + s8;
+            };
+
+            return (
+                <div className="max-w-6xl mx-auto p-8 flex flex-col min-h-screen">
+                    <div className="flex-grow">
+                    <header className="mb-8 border-b pb-4 flex justify-between items-end no-print">
+                        <h1 className="serif text-3xl">Executive Values Architect</h1>
+                        <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">v{VERSION}</p>
+                    </header>
+
+                    {/* VIEW 1: IDENTITY */}
+                    {view === 'name' && (
+                        <div className="py-10 max-w-2xl mx-auto">
+                            <section className="bg-gray-50 p-8 rounded-lg mb-10 border border-gray-100 shadow-sm">
+                                <h3 className="serif text-2xl mb-4 border-b pb-2 italic text-gray-700 font-bold uppercase tracking-widest">Instructions</h3>
+                                <ul className="space-y-4 text-sm text-gray-600 italic">
+                                    <li className="flex gap-2"><span>1.</span> <strong>Total Sort:</strong> All 50 values must be assigned to a column.</li>
+                                    <li className="flex gap-2"><span>2.</span> <strong>The North Star:</strong> Your Core pile must be refined to exactly five.</li>
+                                    <li className="flex gap-2"><span>3.</span> <strong>Forensic Audit:</strong> The report analyzes what you prioritize and what you exile.</li>
+                                </ul>
+                            </section>
+                            <div className="text-center space-y-6">
+                                <input type="text" className="w-full border-b-2 p-4 text-2xl text-center outline-none focus:border-black transition" placeholder="Leader Full Name" value={userName} onChange={e => setUserName(e.target.value)} />
+                                <input type="text" className="w-full border-b-2 p-4 text-xl text-center outline-none focus:border-black transition" placeholder="Life Stage (e.g., 60s)" value={lifeStage} onChange={e => setLifeStage(e.target.value)} />
+                                {userName.length > 2 && <button onClick={() => setView('sort')} className="mt-8 bg-black text-white px-12 py-3 rounded-full hover:bg-gray-800 shadow-xl transition">Begin Assessment</button>}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* VIEW 2: SORTING */}
+                    {view === 'sort' && (
+                        <div className="grid grid-cols-4 gap-6">
+                            <div className="column">
+                                <h3 className="font-bold mb-4 uppercase text-[10px] tracking-widest text-gray-400">The Deck ({state.deck.length})</h3>
+                                <div className="space-y-2 max-h-[65vh] overflow-y-auto pr-2">
+                                    {state.deck.map(i => (
+                                        <div key={i.id} draggable onDragStart={e => e.dataTransfer.setData("d", JSON.stringify({i, f: 'deck'}))} className="card shadow-sm">
+                                            <div className="font-bold text-zinc-800">{i.n}</div>
+                                            <div className="text-[10px] text-gray-400 mt-1 italic leading-tight">{i.d}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            <DropCol title="Core" id="core" items={state.core} move={move} theme="border-blue-200" />
+                            <DropCol title="Important" id="important" items={state.important} move={move} theme="border-gray-100" />
+                            <DropCol title="Noise" id="noise" items={state.noise} move={move} theme="bg-gray-50 border-transparent opacity-80" />
+                            {state.deck.length === 0 && (
+                                <div className="fixed bottom-10 right-10">
+                                    <button onClick={() => state.core.length === 5 ? generateReport() : setView('top5')} className="bg-blue-600 text-white px-10 py-4 rounded-full shadow-2xl animate-pulse font-bold">
+                                        {state.core.length === 5 ? "Generate Executive Report" : "Refine North Star"}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* VIEW 3: REFINEMENT */}
+                    {view === 'top5' && (
+                        <div className="py-10 text-center">
+                            <h2 className="serif text-4xl mb-10">Isolate Your North Star (Exactly 5)</h2>
+                            <div className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
+                                {state.core.map(i => (
+                                    <div key={i.id} onClick={() => top5.includes(i) ? setTop5(top5.filter(x => x !== i)) : top5.length < 5 && setTop5([...top5, i])} 
+                                         className={`p-6 border-2 rounded-xl cursor-pointer w-64 transition-all ${top5.includes(i) ? 'border-black bg-gray-50 shadow-inner' : 'border-gray-100 opacity-40 grayscale'}`}>
+                                        <div className="font-bold text-lg mb-2">{i.n}</div>
+                                        <div className="text-[11px] text-gray-500 leading-tight italic">{i.d}</div>
+                                    </div>
+                                ))}
+                            </div>
+                            {top5.length === 5 && <button onClick={generateReport} className="mt-16 bg-black text-white px-16 py-4 rounded-full text-xl shadow-xl">Finalize Assessment</button>}
+                        </div>
+                    )}
+
+                    {/* VIEW 4: REPORT */}
+                    {view === 'debrief' && (
+                        <div className="max-w-4xl mx-auto py-10 space-y-16">
+                            <div className="border-b-4 border-black pb-4 flex justify-between items-end">
+                                <div><h2 className="serif text-6xl">{userName}</h2><p className="text-xs text-gray-400 mt-2 uppercase tracking-widest font-bold">Life Stage: {lifeStage}</p></div>
+                                <div className="text-right text-[10px] text-gray-400 font-bold uppercase"><p>{timestamp}</p><p className="no-print mt-2 text-blue-600 cursor-pointer font-bold underline" onClick={() => window.print()}>EXPORT PDF</p></div>
+                            </div>
+
+                            <section className="bg-white p-10 border border-gray-100 shadow-sm rounded-lg">
+                                <h3 className="serif text-3xl border-b-2 border-black pb-4 mb-8 uppercase tracking-widest">I. The North Star</h3>
+                                <div className="grid grid-cols-5 gap-2 mb-10">
+                                    {top5.map(v => <div key={v.id} className="bg-gray-50 p-4 border rounded text-center shadow-sm"><div className="font-bold text-[9px] uppercase text-gray-400 mb-1">{v.c}</div><div className="font-bold text-[11px] serif uppercase">{v.n}</div></div>)}
+                                </div>
+                                <p className="text-gray-700 leading-relaxed italic text-xl border-l-8 pl-8 border-gray-200">"{getNorthStarAnalysis()}"</p>
+                            </section>
+
+                            <section className="bg-zinc-900 text-zinc-100 p-10 shadow-2xl rounded-lg">
+                                <h3 className="serif text-3xl border-b-2 border-zinc-700 pb-4 mb-8 uppercase tracking-widest text-white">II. The Exile Zone</h3>
+                                <p className="text-zinc-300 text-lg leading-relaxed mb-10 italic border-l-4 pl-6 border-zinc-500">"{getExileAnalysis()}"</p>
+                                <div className="bg-zinc-800 p-8 rounded-lg border border-zinc-700">
+                                    <p className="text-white font-bold mb-4 uppercase text-[10px] tracking-widest italic">Noise Distribution:</p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {state.noise.map(v => <span key={v.id} className="text-[10px] text-zinc-500 bg-zinc-900 px-2 py-1 rounded">{v.n}</span>)}
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section className="bg-white p-10 border-l-8 border-indigo-600 shadow-sm rounded-lg">
+                                <h3 className="serif text-3xl border-b-2 border-indigo-100 pb-4 mb-8 uppercase tracking-widest text-indigo-900">III. The Systemic Lens</h3>
+                                <p className="text-gray-600 text-lg leading-relaxed mb-6 italic border-l-4 pl-6 border-indigo-200">"{getSystemicAnalysis()}"</p>
+                            </section>
+
+                            <section className="bg-white p-10 border-l-8 border-emerald-600 shadow-sm rounded-lg">
+                                <h3 className="serif text-3xl border-b-2 border-emerald-100 pb-4 mb-8 uppercase tracking-widest text-emerald-900">IV. The Paradox Lens</h3>
+                                <p className="text-gray-600 text-lg leading-relaxed mb-6 italic border-l-4 pl-6 border-emerald-200">"{getParadoxAnalysis()}"</p>
+                            </section>
+
+                            <section className="bg-black text-white p-12 rounded-lg shadow-2xl">
+                                <h3 className="serif text-4xl mb-10 border-b border-gray-700 pb-6 text-center uppercase tracking-widest">Inquiry</h3>
+                                <ul className="space-y-10 text-lg italic text-gray-400 max-w-2xl mx-auto">
+                                    <li className="flex gap-6 leading-relaxed"><span className="text-white font-bold not-italic text-2xl">1.</span> Which value is currently over-serving your ego but under-serving the system?</li>
+                                    <li className="flex gap-6 leading-relaxed"><span className="text-white font-bold not-italic text-2xl">2.</span> If you had to sacrifice one North Star value to save your system, which dies first?</li>
+                                    <li className="flex gap-6 leading-relaxed"><span className="text-white font-bold not-italic text-2xl">3.</span> What environmental conditions allow all five values to exist in alignment?</li>
+                                </ul>
+                            </section>
+                        </div>
+                    )}
+                    </div>
+                    
+                    <footer className="mt-20 border-t pt-8 pb-12 flex justify-between items-center text-[10px] text-gray-400 uppercase tracking-widest no-print">
+                        <div className="font-bold">{COPYRIGHT}</div>
+                        <div className="italic uppercase tracking-widest">SYSTEMIC VALUES ARCHITECT | v{VERSION}</div>
+                    </footer>
+                </div>
+            );
+        }
+
+        function DropCol({ title, items, move, id, theme }) {
+            return (
+                <div className={`column ${theme}`} onDragOver={e => e.preventDefault()} onDrop={e => {const d = JSON.parse(e.dataTransfer.getData("d")); move(d.i, d.f, id)}}>
+                    <h3 className="font-bold mb-4 flex justify-between uppercase text-[10px] tracking-widest">{title} <span className="text-gray-400 font-normal">{items.length}</span></h3>
+                    <div className="space-y-2">
+                        {items.map(i => (
+                            <div key={i.id} draggable onDragStart={e => e.dataTransfer.setData("d", JSON.stringify({i, f: id}))} className="card shadow-sm hover:border-black transition-colors">
+                                <div className="font-bold text-zinc-800">{i.n}</div>
+                                <div className="text-[9px] text-gray-400 leading-tight mt-1 italic">{i.d}</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
