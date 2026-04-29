@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Executive Values Architect | v1.5.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #ffffff; color: #1a1a1a; }
+        .serif { font-family: 'Playfair Display', serif; }
+        .card { cursor: grab; background: #fff; border: 1px solid #e5e7eb; border-radius: 4px; padding: 10px; font-size: 0.85rem; transition: 0.2s; }
+        .column { min-height: 480px; background: #f9fafb; border: 1px solid #edf2f7; border-radius: 8px; padding: 15px; }
+        @media print { .no-print { display: none !important; } .print-only { display: block !important; } }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState } = React;
+
+        const VERSION = "1.5.0";
+        const COPYRIGHT = "Copyright © 2026 Wong Tsien Loong. All Rights Reserved.";
+
+        const VALUES_50 = [
+            { id: 1, n: "Acceptance", d: "To be accepted exactly as I am", c: "Human" },
+            { id: 2, n: "Accountability", d: "Taking full ownership of results and actions", c: "Driver" },
+            { id: 3, n: "Achievement", d: "Fulfilling significant goals", c: "Driver" },
+            { id: 4, n: "Evolution", d: "Embracing change, variety, and newness", c: "Vision" },
+            { id: 5, n: "Altruism", d: "Selfless concern for others", c: "Human" },
+            { id: 6, n: "Ambition", d: "Drive for success and status", c: "Driver" },
+            { id: 7, n: "Authenticity", d: "Being true to one’s own soul", c: "Self" },
+            { id: 8, n: "Autonomy", d: "Independence and individual discretion", c: "Self" },
+            { id: 9, n: "Balance", d: "Harmony between life demands", c: "Stability" },
+            { id: 10, n: "Belonging", d: "Sense of being part of a community", c: "Human" },
+            { id: 11, n: "Challenge", d: "Tasks that test my abilities", c: "Driver" },
+            { id: 12, n: "Compassion", d: "Deep concern for others", c: "Human" },
+            { id: 13, n: "Competence", d: "Mastery and skill in execution", c: "Driver" },
+            { id: 14, n: "Contribution", d: "Making a lasting difference", c: "Vision" },
+            { id: 15, n: "Courage", d: "Brave action in the face of fear", c: "Driver" },
+            { id: 16, n: "Creativity", d: "Original ideas and imagination", c: "Vision" },
+            { id: 17, n: "Curiosity", d: "Learning and seeking new things", c: "Vision" },
+            { id: 18, n: "Decisiveness", d: "Firm and timely choices", c: "Driver" },
+            { id: 19, n: "Diligence", d: "Thorough and conscientious effort", c: "Stability" },
+            { id: 20, n: "Diversity", d: "Respecting individual differences", c: "Human" },
+            { id: 21, n: "Duty", d: "Moral and professional obligations", c: "Stability" },
+            { id: 22, n: "Ecology", d: "Harmony with the environment", c: "Vision" },
+            { id: 23, n: "Excellence", d: "Relentless pursuit of optimal performance", c: "Driver" },
+            { id: 24, n: "Fairness", d: "Justice and equal treatment", c: "Human" },
+            { id: 25, n: "Principled Action", d: "Moral standards and integrity", c: "Self" },
+            { id: 26, n: "Faith", d: "Belief in a higher purpose", c: "Self" },
+            { id: 27, n: "Family", d: "Health and happiness of the home", c: "Human" },
+            { id: 28, n: "Health", d: "Physical and mental well-being", c: "Self" },
+            { id: 29, n: "Freedom", d: "Lack of undue restrictions", c: "Self" },
+            { id: 30, n: "Friendship", d: "Close, supportive connections", c: "Human" },
+            { id: 31, n: "Generosity", d: "Giving to assist others", c: "Human" },
+            { id: 32, n: "Growth", d: "Continuous self-improvement", c: "Vision" },
+            { id: 33, n: "Harmony", d: "Inner peace and conflict avoidance", c: "Stability" },
+            { id: 34, n: "Humility", d: "Operating without ego", c: "Self" },
+            { id: 35, n: "Humor", d: "Seeing the lighter side of life", c: "Human" },
+            { id: 36, n: "Influence", d: "Control and impact over outcomes", c: "Driver" },
+            { id: 37, n: "Innovation", d: "Developing new solutions", c: "Vision" },
+            { id: 38, n: "Intelligence", d: "Keeping the mind sharp and analytical", c: "Vision" },
+            { id: 39, n: "Justice", d: "Fair treatment for all", c: "Human" },
+            { id: 40, n: "Knowledge", d: "Seeking deep understanding", c: "Vision" },
+            { id: 41, n: "Leadership", d: "Inspiring and guiding others", c: "Driver" },
+            { id: 42, n: "Legacy", d: "Long-term impact left behind", c: "Vision" },
+            { id: 43, n: "Mindfulness", d: "Being present and conscious", c: "Self" },
+            { id: 44, n: "Order", d: "Life that is well-organized", c: "Stability" },
+            { id: 45, n: "Practicality", d: "Sensible and realistic solutions", c: "Stability" },
+            { id: 46, n: "Recognition", d: "Validated and acknowledged by others", c: "Driver" },
+            { id: 47, n: "Resilience", d: "Bouncing back from adversity", c: "Driver" },
+            { id: 48, n: "Responsibility", d: "Ownership of duties", c: "Driver" },
+            { id: 49, n: "Safety", d: "Security and protection from harm", c: "Stability" },
+            { id: 50, n: "Wisdom", d: "Applying knowledge effectively", c: "Vision" }
+        ];
+
+        function App() {
+            const [userName, setUserName] = useState("");
+            const [userAge, setUserAge] = useState("");
+            const [state, setState] = useState({ deck: VALUES_50, core: [], important: [], noise: [] });
+            const [top5, setTop5] = useState([]);
+            const [view, setView] = useState('name');
+            const [timestamp, setTimestamp] = useState("");
+
+            const move = (item, from, to) => {
+                const ns = { ...state };
+                ns[from] = ns[from].filter(i => i.id !== item.id);
+                ns[to] = [...ns[to], item].sort((a,b) => a.n.localeCompare(b.n));
+                setState(ns);
+            };
+
+            const toggleTop5 = (item) => {
+                if (top5.includes(item)) setTop5(top5.filter(i => i !== item));
+                else if (top5.length < 5) setTop5([...top5, item]);
+            };
+
+            const generateReport = () => {
+                const final5 = state.core.length === 5 ? state.core : top5;
+                setTop5(final5);
+                setTimestamp(new Date().toLocaleString('en-GB', { dateStyle: 'full', timeStyle: 'short' }));
+                setView('debrief');
+            };
+
+            // REFINED INTERNAL NARRATIVE LOGIC
+            const getExileDeepDive = () => {
+                const noise = state.noise;
+                if (!noise.length) return "Insufficient data.";
+                const counts = noise.reduce((acc, v) => { acc[v.c] = (acc[v.c] || 0) + 1; return acc; }, {});
+                const primaryExile = Object.keys(counts).sort((a,b) => counts[b] - counts[a])[0];
+                const coreCluster = top5.reduce((acc, v) => { acc[v.c] = (acc[v.c] || 0) + 1; return acc; }, {});
+                const primaryCore = Object.keys(coreCluster).sort((a,b) => coreCluster[b] - coreCluster[a])[0];
+
+                if (primaryCore === 'Vision' && primaryExile === 'Stability') {
+                    return "The High-Altitude Hazard: Your Core is set to the horizon, but you have exiled all grounding wires. You are architecting a future without a safety net. This is brilliant for innovation, but systemic failure is often invisible to you until it is catastrophic. Reclaim enough 'Order' to ensure your team doesn't burn out in your slipstream.";
+                }
+                if (primaryCore === 'Driver' && primaryExile === 'Human') {
+                    return "The Clinical Executioner: You have prioritized the result and exiled the relational cost. You likely view compassion as a friction to performance. In a crisis, your team will follow your orders but they will not share your burden. You are currently leading a machine, not an ecology.";
+                }
+                return `The ${primaryExile} Shadow: By 'noising' these values, you have declared them irrelevant to your current mission. However, what we exile is usually what we eventually need to survive. Ask yourself: 'Who in my system is currently carrying the weight of the values I've discarded?'`;
+            };
+
+            const copyToClipboard = () => {
+                const prompt = `ACT AS A SYSTEMIC EXECUTIVE COACH (Expertise: Peter Hawkins, David Clutterbuck). 
+Analyze this leadership profile for: ${userName}, Age: ${userAge}.
+NORTH STAR (CORE 5): ${top5.map(v => v.n).join(", ")}.
+OPERATIONAL TOOLS (IMPORTANT): ${state.important.map(v => v.n).join(", ")}.
+THE EXILE ZONE (NOISE): ${state.noise.map(v => v.n).join(", ")}.
+
+INSTRUCTIONS:
+1. Identify the 'Structural Integrity' of this profile. 
+2. Analyze the 'Systemic Cost'—who is paying the bill for these Core values?
+3. Identify one 'Lethal Blindspot' based on the Exile Zone.
+4. Provide 3 provocative, derisive coaching questions tailored for a leader of this age.
+Keep the tone frank, slightly sarcastic, and unsentimental.`;
+                navigator.clipboard.writeText(prompt);
+                alert("Deep Audit Prompt Copied! Paste this into Gemini/ChatGPT for the full forensic analysis.");
+            };
+
+            return (
+                <div className="max-w-6xl mx-auto p-8 flex flex-col min-h-screen">
+                    <div className="flex-grow">
+                    <header className="mb-8 border-b pb-4 flex justify-between items-end no-print">
+                        <h1 className="serif text-3xl">Executive Values Architect</h1>
+                        <p className="text-xs text-gray-400 font-bold uppercase tracking-widest italic">v{VERSION}</p>
+                    </header>
+
+                    {view === 'name' && (
+                        <div className="py-10 max-w-2xl mx-auto">
+                            <section className="bg-gray-50 p-8 rounded-lg mb-10 border border-gray-100 shadow-sm">
+                                <h3 className="serif text-2xl mb-4 border-b pb-2 font-bold uppercase tracking-widest text-gray-700">Instructions</h3>
+                                <ul className="space-y-4 text-sm text-gray-600 italic">
+                                    <li>1. **Full Sort:** Assign all 50 values. Do not leave the deck.</li>
+                                    <li>2. **The Forcing Function:** Your North Star must be exactly five values.</li>
+                                    <li>3. **The Bridge:** After the report, use the 'Deep Audit' button to unlock the full systemic analysis.</li>
+                                </ul>
+                            </section>
+                            <div className="text-center space-y-6">
+                                <input type="text" className="w-full border-b-2 p-4 text-2xl text-center outline-none focus:border-black" placeholder="Full Name" value={userName} onChange={e => setUserName(e.target.value)} />
+                                <input type="number" className="w-full border-b-2 p-4 text-xl text-center outline-none focus:border-black" placeholder="Age" value={userAge} onChange={e => setUserAge(e.target.value)} />
+                                {userName.length > 2 && userAge > 0 && <button onClick={() => setView('sort')} className="mt-8 bg-black text-white px-12 py-3 rounded-full hover:bg-gray-800 transition">Start</button>}
+                            </div>
+                        </div>
+                    )}
+
+                    {view === 'sort' && (
+                        <div className="grid grid-cols-4 gap-6">
+                            <div className="column">
+                                <h3 className="font-bold mb-4 uppercase text-[10px] tracking-widest text-gray-400">The Deck ({state.deck.length})</h3>
+                                <div className="space-y-2 max-h-[65vh] overflow-y-auto pr-2">
+                                    {state.deck.map(i => <div key={i.id} draggable onDragStart={e => e.dataTransfer.setData("d", JSON.stringify({i, f: 'deck'}))} className="card shadow-sm"><div className="font-bold">{i.n}</div><div className="text-[10px] text-gray-400 mt-1 italic leading-tight">{i.d}</div></div>)}
+                                </div>
+                            </div>
+                            <DropCol title="Core" id="core" items={state.core} move={move} theme="border-blue-200" />
+                            <DropCol title="Important" id="important" items={state.important} move={move} theme="border-gray-100" />
+                            <DropCol title="Noise" id="noise" items={state.noise} move={move} theme="bg-gray-50 border-transparent opacity-80" />
+                            {state.deck.length === 0 && (
+                                <div className="fixed bottom-10 right-10">
+                                    <button onClick={() => state.core.length === 5 ? generateReport() : (state.core.length > 5 ? setView('top5') : alert("Exactly 5 Core values required."))} 
+                                            className="bg-blue-600 text-white px-10 py-4 rounded-full shadow-2xl animate-pulse font-bold">
+                                        {state.core.length === 5 ? "Generate Report" : "Need 5 Core"}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {view === 'top5' && (
+                        <div className="py-10 text-center">
+                            <h2 className="serif text-4xl mb-10">Refine to Exactly 5</h2>
+                            <div className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
+                                {state.core.map(i => (
+                                    <div key={i.id} onClick={() => toggleTop5(i)} className={`p-6 border-2 rounded-xl cursor-pointer w-64 transition-all ${top5.includes(i) ? 'border-black bg-gray-50 shadow-inner' : 'border-gray-100 opacity-40 grayscale'}`}>
+                                        <div className="font-bold text-lg mb-2">{i.n}</div>
+                                        <div className="text-[11px] text-gray-500 italic leading-tight">{i.d}</div>
+                                    </div>
+                                ))}
+                            </div>
+                            {top5.length === 5 && <button onClick={generateReport} className="mt-16 bg-black text-white px-16 py-4 rounded-full text-xl shadow-xl">Finalize Report</button>}
+                        </div>
+                    )}
+
+                    {view === 'debrief' && (
+                        <div className="max-w-4xl mx-auto py-10 space-y-16">
+                            <div className="border-b-4 border-black pb-4 flex justify-between items-end">
+                                <div><h2 className="serif text-6xl">{userName}</h2><p className="text-xs text-gray-400 mt-2 font-bold uppercase tracking-widest italic">Age: {userAge}</p></div>
+                                <div className="text-right text-[10px] text-gray-400 font-bold uppercase"><p>{timestamp}</p></div>
+                            </div>
+
+                            <section className="bg-white p-10 border border-gray-100 shadow-sm rounded-lg">
+                                <h3 className="serif text-3xl border-b-2 border-black pb-4 mb-8 uppercase tracking-widest">I. North Star</h3>
+                                <div className="grid grid-cols-5 gap-3 mb-10">
+                                    {top5.map(v => <div key={v.id} className="bg-gray-50 p-4 border rounded text-center shadow-sm"><div className="font-bold text-[9px] uppercase text-gray-400 mb-1">{v.c}</div><div className="font-bold text-[11px] serif uppercase">{v.n}</div></div>)}
+                                </div>
+                                <p className="text-gray-700 leading-relaxed italic text-lg border-l-8 pl-8 border-gray-200">This profile reveals a leader who prioritizes convictions over convenience. Your legacy is being built on character, not just metrics.</p>
+                            </section>
+
+                            <section className="bg-zinc-900 text-zinc-100 p-10 shadow-2xl rounded-lg">
+                                <h3 className="serif text-3xl border-b-2 border-zinc-700 pb-4 mb-8 uppercase tracking-widest text-white">II. Exile Analysis</h3>
+                                <p className="text-zinc-300 text-lg leading-relaxed italic border-l-4 pl-6 border-zinc-500">{getExileDeepDive()}</p>
+                            </section>
+
+                            <div className="text-center no-print">
+                                <button onClick={copyToClipboard} className="bg-indigo-600 text-white px-12 py-5 rounded-full font-bold hover:bg-indigo-700 shadow-xl text-xl animate-bounce">
+                                    Prepare Deep Audit Data for Coach
+                                </button>
+                                <p className="mt-4 text-xs text-gray-400 italic">Click this to copy your systemic telemetry. Then paste it into your chat with Wong or Gemini.</p>
+                            </div>
+                        </div>
+                    )}
+                    </div>
+                    
+                    <footer className="mt-20 border-t pt-8 pb-12 flex justify-between items-center text-[10px] text-gray-400 uppercase tracking-widest no-print">
+                        <div className="font-bold">{COPYRIGHT}</div>
+                        <div>SYSTEMIC VALUES ARCHITECT | v{VERSION}</div>
+                    </footer>
+                </div>
+            );
+        }
+
+        function DropCol({ title, items, move, id, theme }) {
+            return (
+                <div className={`column ${theme}`} onDragOver={e => e.preventDefault()} onDrop={e => {const d = JSON.parse(e.dataTransfer.getData("d")); move(d.i, d.f, id)}}>
+                    <h3 className="font-bold mb-4 flex justify-between uppercase text-[10px] tracking-widest">{title} <span className="text-gray-300 font-normal">{items.length}</span></h3>
+                    <div className="space-y-2">{items.map(i => <div key={i.id} draggable onDragStart={e => e.dataTransfer.setData("d", JSON.stringify({i, f: id}))} className="card shadow-sm hover:border-black"><div className="font-bold">{i.n}</div></div>)}</div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
